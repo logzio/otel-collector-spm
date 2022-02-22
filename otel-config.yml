@@ -1,0 +1,72 @@
+receivers:
+  jaeger:
+    protocols:
+      thrift_compact:
+        endpoint: "0.0.0.0:6831"
+      thrift_binary:
+        endpoint: "0.0.0.0:6832"
+      grpc:
+        endpoint: "0.0.0.0:14250"
+      thrift_http:
+        endpoint: "0.0.0.0:14268"
+  opencensus:
+    endpoint: "0.0.0.0:55678"
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:55681"
+  zipkin:
+    endpoint: "0.0.0.0:9411"
+
+  otlp/spanmetrics:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:12345"
+
+
+exporters:
+  logzio:
+    region:
+    account_token:
+  logging:
+  prometheusremotewrite:
+    endpoint: https://listener.logz.io:8053
+    headers:
+      Authorization: "Bearer "
+
+processors:
+  batch:
+  memory_limiter: null
+  spanmetrics:
+    metrics_exporter: prometheusremotewrite
+    latency_histogram_buckets: [2ms, 8ms, 50ms, 100ms, 200ms, 500ms, 1s, 5s, 10s]
+    dimensions_cache_size: 100000
+    aggregation_temporality: AGGREGATION_TEMPORALITY_CUMULATIVE
+    dimensions:
+      - name: http.method
+
+extensions:
+  pprof:
+    endpoint: :1777
+  zpages:
+    endpoint: :55679
+  health_check:
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [opencensus, jaeger, zipkin, otlp]
+      processors: [batch,spanmetrics,memory_limiter]
+      exporters: [logging, logzio]
+
+    metrics/spanmetrics:
+      receivers: [otlp/spanmetrics]
+      exporters: [prometheusremotewrite]
+  telemetry:
+    logs:
+      level: "debug"
+
+
