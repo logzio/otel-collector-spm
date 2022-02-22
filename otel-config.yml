@@ -38,7 +38,6 @@ exporters:
 
 processors:
   batch:
-  memory_limiter: null
   spanmetrics:
     metrics_exporter: prometheusremotewrite
     latency_histogram_buckets: [2ms, 8ms, 50ms, 100ms, 200ms, 500ms, 1s, 5s, 10s]
@@ -59,7 +58,7 @@ service:
   pipelines:
     traces:
       receivers: [opencensus, jaeger, zipkin, otlp]
-      processors: [batch,spanmetrics,memory_limiter]
+      processors: [batch,spanmetrics]
       exporters: [logging, logzio]
 
     metrics/spanmetrics:

@@ -13,7 +13,6 @@ This docker container runs OpenTelemetry collector with the most common receiver
 
 ## Quick start:
 ### Pull docker image:
-
 ```
 docker pull logzio/otel-collector-spm
 ```
@@ -23,7 +22,7 @@ docker pull logzio/otel-collector-spm
 When running on a Linux host, use the `--network host` flag to publish the collector ports:
 
 ```
-docker run \
+docker run --name logzio-spm \
 -e LOGZIO_REGION=<<LOGZIO_REGION>> \
 -e LOGZIO_TRACES_TOKEN=<<LOGZIO_TRACES_TOKEN>> \
 -e LOGZIO_METRICS_TOKEN=<<LOGZIO_METRICS_TOKEN>> \
@@ -34,7 +33,7 @@ logzio/otel-collector-spm
 When running on MacOS or Windows hosts, publish the ports using the `-p` flag:
 
 ```
-docker run \
+docker run --name logzio-spm \
 -e LOGZIO_REGION=<<LOGZIO_REGION>> \
 -e LOGZIO_TRACES_TOKEN=<<LOGZIO_TRACES_TOKEN>> \
 -e LOGZIO_METRICS_TOKEN=<<LOGZIO_METRICS_TOKEN>> \
@@ -50,6 +49,20 @@ docker run \
 -p 55681:55681 \
 logzio/otel-collector-spm
 ```
+### Send traces with `hotrod`:
+Run hotrod container:
+```
+docker run \
+  --rm \
+  --link logzio-spm \
+  --env JAEGER_AGENT_HOST=logzio-spm \
+  --env JAEGER_AGENT_PORT=6831 \
+  -p8080-8083:8080-8083 \
+  jaegertracing/example-hotrod:latest \
+  all
+```
+Then open [http://127.0.0.1:8080](http://127.0.0.1:8080) and start generating traces
+
 ### Environment variables configuration:
 * `LATENCY_HISTOGRAM_BUCKETS` (Optional): Comma separated list of durations defining the latency histogram buckets. Default: `2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s`
 
@@ -58,7 +71,6 @@ logzio/otel-collector-spm
 * `SPAN_METRICS_DIMENSIONS_CACHE_SIZE` (Optional): the max items number of metric_key_to_dimensions_cache. If not provided, will use default value size 10000.
 
 * `AGGREGATION_TEMPORALITY` (Optional) : Defines the aggregation temporality of the generated metrics. One of either `cumulative` or `delta`. Default: `cumulative`
-
 
 ### receiver ports
 

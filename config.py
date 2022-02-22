@@ -12,7 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 def getListenerUrl() -> str:
-    return "https://listener.logz.io:8053".replace("listener.", "listener-{}.".format(os.getenv("LOGZIO_REGION")))
+    if os.getenv("LOGZIO_REGION") == 'us':
+        return "https://listener.logz.io:8053"
+    else:
+        return "https://listener.logz.io:8053".replace("listener.", "listener-{}.".format(os.getenv("LOGZIO_REGION")))
 
 
 # is_valid_logzio_token checks if a given token is a valid logz.io token
