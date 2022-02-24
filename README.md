@@ -49,22 +49,9 @@ docker run --name logzio-spm \
 -p 55681:55681 \
 logzio/otel-collector-spm
 ```
-### Send traces with `hotrod`:
-Run hotrod container:
-```
-docker run \
-  --rm \
-  --link logzio-spm \
-  --env JAEGER_AGENT_HOST=logzio-spm \
-  --env JAEGER_AGENT_PORT=6831 \
-  -p8080-8083:8080-8083 \
-  jaegertracing/example-hotrod:latest \
-  all
-```
-Then open [http://127.0.0.1:8080](http://127.0.0.1:8080) and start generating traces
 
 ### Environment variables configuration:
-* `LATENCY_HISTOGRAM_BUCKETS` (Optional): Comma separated list of durations defining the latency histogram buckets. Default: `2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s`
+* `LATENCY_HISTOGRAM_BUCKETS` (Optional): Comma separated list of durations defining the latency histogram buckets. Default: `2ms, 8ms, 50ms, 100ms, 200ms, 500ms, 1s, 5s, 10s`
 
 * `SPAN_METRICS_DIMENSIONS` (Optional) : Each metric will have at least the following dimensions because they are common across all spans: `Service name`,`Operation`,`Span kind`,`Status code`.  The input is comma separated list of dimensions to add together with the default dimensions (example: `region,http.url`). Each additional dimension is defined with a name which is looked up in the span's collection of attributes or resource attributes. If the named attribute is missing in the span, this dimension will be omitted from the metric.
 
@@ -90,4 +77,7 @@ Then open [http://127.0.0.1:8080](http://127.0.0.1:8080) and start generating tr
 - Zipkin
     - 9411
 
+## Changelog
+**1.0.0**
+- SPM container initial release
 
