@@ -51,6 +51,8 @@ logzio/otel-collector-spm
 ```
 
 ### Environment variables configuration:
+* `LOG_LEVEL` (Optional) : Defines the opentelemetry collector log level. One of either `info` or `debug`. Default: `info`
+
 * `LATENCY_HISTOGRAM_BUCKETS` (Optional): Comma separated list of durations defining the latency histogram buckets. Default: `2ms, 8ms, 50ms, 100ms, 200ms, 500ms, 1s, 5s, 10s`
 
 * `SPAN_METRICS_DIMENSIONS` (Optional) : Each metric will have at least the following dimensions because they are common across all spans: `Service name`,`Operation`,`Span kind`,`Status code`.  The input is comma separated list of dimensions to add together with the default dimensions (example: `region,http.url`). Each additional dimension is defined with a name which is looked up in the span's collection of attributes or resource attributes. If the named attribute is missing in the span, this dimension will be omitted from the metric.

@@ -54,12 +54,26 @@ def is_valid_aggregation_temporality(aggregation_temporality):
     return True
 
 
+def is_valid_log_level(log_level):
+    if type(log_level) is not str:
+        raise TypeError("LOG_LEVEL should be a string")
+    valid_log_levels = ["info", "debug"]
+    if log_level != "":
+        if log_level not in valid_log_levels:
+            raise ValueError(
+                "invalid log level: {}. allowed values are {}".format(log_level,
+                                                                      valid_log_levels))
+    return True
+
+
 def inputValidator():
     is_valid_logzio_region_code(os.getenv("LOGZIO_REGION"))
     is_valid_logzio_token(os.getenv("LOGZIO_TRACES_TOKEN"))
     is_valid_logzio_token(os.getenv("LOGZIO_METRICS_TOKEN"))
     if os.getenv("AGGREGATION_TEMPORALITY") is not None:
         is_valid_aggregation_temporality(os.getenv("AGGREGATION_TEMPORALITY"))
+    if os.getenv("LOG_LEVEL") is not None:
+        is_valid_log_level(os.getenv("LOG_LEVEL"))
 
 
 if __name__ == '__main__':
@@ -107,6 +121,13 @@ if __name__ == '__main__':
     else:
         logger.info('No span metrics aggregation_temporality found in environment variables, setting to default: '
                     'AGGREGATION_TEMPORALITY_CUMULATIVE')
+
+    if os.getenv("LOG_LEVEL") is not None:
+        logger.info('Updating opentelemetry collector log level')
+        logLevel = os.getenv("LOG_LEVEL")
+        config["service"]["telemetry"]["logs"]["level"] = logLevel
+    else:
+        logger.info('No log level found in environment variables, setting to default: info')
 
     with open("/etc/otel/config.yaml", "w") as f:
         yaml.dump(config, f)
