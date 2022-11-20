@@ -80,6 +80,11 @@ logzio/otel-collector-spm
     - 9411
 
 ## Changelog
+**1.0.2**
+- Add `LOG_LEVEL` flag
+- Otel version `0.48.0` -> `0.64.0` 
+**1.0.1**
+- Otel version `0.45.0` -> `0.48.0`
 **1.0.0**
 - SPM container initial release
 
