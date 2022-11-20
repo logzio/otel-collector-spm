@@ -9,7 +9,7 @@ RUN apt-get -y install curl
 COPY ./config.py config.py
 COPY ./entrypoint.sh entrypoint.sh
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN curl -L https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.48.0/otelcol-contrib_0.48.0_linux_amd64.tar.gz -o otelcol-contrib.tar.gz
+RUN curl -L https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.64.0/otelcol-contrib_0.64.0_linux_amd64.tar.gz -o otelcol-contrib.tar.gz
 RUN tar -xf otelcol-contrib.tar.gz otelcol-contrib
 RUN mv otelcol-contrib otelcontribcol
 EXPOSE 4317 55680 55679 8888 6060 7276 9411 9943 1234 6831 6832 14250 14268 4317 4318 8888
